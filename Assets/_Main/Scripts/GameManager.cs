@@ -1,71 +1,51 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.Hands.Samples.GestureSample;
 using UnityEngine.XR.Templates.MR;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Home Screen")]
-    [SerializeField] private GameObject[] m_HomePanels;
-    [SerializeField] private Button[] m_HomeButtons;
+    [SerializeField]
+    public StaticHandGesture[] staticHandGestures;
 
-    [Header("Main Screen")]
-    [SerializeField] public GameObject[] m_MainPanel;
-    [SerializeField] public Button[] m_MainButtons;
+    private ARFeatureController m_FeatureController;
+
+    [SerializeField]
+    public event Action<int> NextChapterTrigger;
 
     [SerializeField]
     public event Action<int> Congratulation;
 
-    [SerializeField]
-    public Camera m_Camera;
-    [SerializeField]
-    public Material skyboxMaterial;
-    [SerializeField]
-    public ARFeatureController m_FeatureController;
-
-    public bool passthroughActive = false;
-
     private void Awake()
     {
         m_FeatureController = GetComponent<ARFeatureController>();
-
-        m_Camera = Camera.main;
     }
 
-    private void Start()
+    public void NextChapter(int nextChapter)
     {
-        for (int btn = 0; btn < m_HomeButtons.Length; btn++)
-        {
-            int index = btn;
-            if (m_HomePanels[index] != null)
-            {
-                m_HomeButtons[index].onClick.AddListener(() => TogglePanels(index, m_HomePanels));
-            }
-        }
-
-        for (int btn = 0; btn < m_MainButtons.Length; btn++)
-        {
-            int index = btn;
-            if (m_MainPanel[index] != null)
-            {
-                m_MainButtons[index].onClick.AddListener(() => TogglePanels(index, m_MainPanel));
-            }
-        }
+        StartCoroutine(ChapterCompletion(nextChapter));
     }
 
-    public void TogglePanels(int index, GameObject[] panels)
+    public IEnumerator ChapterCompletion(int nextChapter)
     {
-        foreach(GameObject panel in panels)
+        // call tick mark of current chapter
+        yield return new WaitForSeconds(1f);
+        foreach (var item in staticHandGestures)
         {
-            panel.gameObject.SetActive(false);
+            item.gameObject.SetActive(false);
         }
-        panels[index].gameObject.SetActive(true);
+        staticHandGestures[nextChapter].gameObject.SetActive(true);
+        NextChapterTrigger?.Invoke(nextChapter);
+        Debug.Log("================== INVOKING NEXTCHAPTERTRIGGER ====================");
     }
 
     public void CongratsUser(int id)
     {
         Congratulation?.Invoke(id);
+        Debug.Log("================== INVOKING CONGRATULATIONS ====================");
     }
 
     public void InitializePassthrough()
@@ -74,20 +54,21 @@ public class GameManager : MonoBehaviour
             m_FeatureController.TogglePassthrough(true);
     }
 
-    public void TogglePassthroughMode()
+#if UNITY_EDITOR
+    public int TestChapter = 0;
+
+    [ContextMenu("NextChapter chapter")]
+    public void TestNextChapterEditor()
     {
-        if (!passthroughActive)
-        {
-            m_Camera.clearFlags = CameraClearFlags.SolidColor;
-            m_Camera.backgroundColor = Color.clear;
-            RenderSettings.skybox = null;
-            passthroughActive = true;
-        }
-        else
-        {
-            m_Camera.clearFlags = CameraClearFlags.Skybox;
-            RenderSettings.skybox = skyboxMaterial;
-            passthroughActive = false;
-        }
+        StartCoroutine(ChapterCompletion(TestChapter));
+        TestChapter++;
     }
+
+    [ContextMenu("Congratulate User")]
+    public void TestCongratulations()
+    {
+        CongratsUser(TestChapter);
+    }
+#endif
+
 }
