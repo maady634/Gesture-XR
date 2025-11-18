@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
             Toggle3DSliders(0);
             m_Sliders[0].RightShift();
         }
-        else if(index >= 5)
+        else if(index >= 3 && index <= 5)
         {
             Toggle3DSliders(1);
             m_Sliders[1].RightShift();

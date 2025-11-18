@@ -12,6 +12,7 @@ namespace UnityEngine.XR.Templates.MR
 
         Coroutine m_FadeCoroutine;
 
+        [ContextMenu("Fade it")]
         public void FadeSkybox(bool visible)
         {
             if (m_FadeCoroutine != null)
