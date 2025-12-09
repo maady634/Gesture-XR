@@ -56,6 +56,7 @@ public class UIManager : MonoBehaviour
     public void BackToHome()
     {
         TogglePanels(0, m_MainPanel);
+        m_GameManager.TurnOffGestures();
     }
 
     public void UISliderUpdate(int index)

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: My-data
   m_EditorClassIdentifier: 
   m_Index: 0
-  m_Sequence: {fileID: 11400000, guid: a059370325346e74093852c4d400faee, type: 2}
-  m_StartFrame: 157
-  m_EndFrame: 363
+  m_Sequence: {fileID: 11400000, guid: fe1c51f57e7b9f344872e7c38ae2b6f3, type: 2}
+  m_StartFrame: 1500
+  m_EndFrame: 2050
   showLeftHand: 0
   showRightHand: 1

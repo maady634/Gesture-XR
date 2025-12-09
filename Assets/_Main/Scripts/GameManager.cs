@@ -53,6 +53,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void TurnOffGestures()
+    {
+        foreach(var f in staticHandGestures)
+        {
+            f.gameObject.SetActive(false);
+        }
+    }
+
     public void NextChapter(int nextChapter)
     {
         skipBg.gameObject.SetActive(true);
